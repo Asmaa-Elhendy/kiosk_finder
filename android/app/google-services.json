@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "162839066635",
+    "project_id": "kiosk-finder-24efd",
+    "storage_bucket": "kiosk-finder-24efd.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:162839066635:android:c9ae61b6f5d38174f2af0e",
+        "android_client_info": {
+          "package_name": "com.example.kiosk_finder"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5DkSlzEY9GYXbo9Ol5uDfTpglIZscR1M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

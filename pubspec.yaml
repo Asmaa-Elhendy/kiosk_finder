@@ -1,0 +1,42 @@
+name: kiosk_finder
+description: "A new Flutter project."
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.6.0
+
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^8.1.6
+  #value equality
+  equatable: ^2.0.7
+  #functional programming things
+  dartz: ^0.10.1
+  #service locator
+  get_it: ^8.0.3
+  internet_connection_checker: ^3.0.1
+  firebase_auth: ^5.4.0
+  firebase_core: ^3.10.0
+
+
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+
+
+  flutter_lints: ^5.0.0
+
+
+flutter:
+
+
+  uses-material-design: true
+
