@@ -8,7 +8,7 @@ class OfflineFailure extends Failure {
   List<Object?> get props => [];
 }
 
-class ServerFailure extends Failure {
+class FirebaseAuthFailure extends Failure {
   @override
   // TODO: implement props
   List<Object?> get props => [];

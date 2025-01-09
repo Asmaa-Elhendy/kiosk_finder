@@ -8,22 +8,22 @@ import '../datasources/user_firebase_data_source.dart';
 import '../models/user_model.dart';
 
 class AuthRepositoryImpl extends AuthRepository {
-  final UserRemoteDataSource remoteDataSource;
+  final UserRemoteDataSource remoteFirebaseDataSource;
   final NetworkInfo networkInfo;
 
   AuthRepositoryImpl({
-    required this.remoteDataSource,
+    required this.remoteFirebaseDataSource,
     required this.networkInfo,
   });
 
   @override
   Future<Either<Failure, UserEntity>> signUp(UserEntity user) async {
     final UserModel userModel = UserModel(
+      id: user.id,
       email: user.email,
       password: user.password,
-      id: user.id ?? '0', // Use `id` from UserEntity if provided
     );
-    return await _getMessage(() => remoteDataSource.signUp(userModel));
+    return await _getMessage(() => remoteFirebaseDataSource.signUp(userModel));
   }
 
   @override
@@ -31,24 +31,24 @@ class AuthRepositoryImpl extends AuthRepository {
     final UserModel userModel = UserModel(
       email: user.email,
       password: user.password,
-      id: user.id ?? '0',
+      id: user.id,
     );
-    return await _getMessage(() => remoteDataSource.signIn(userModel));
+    return await _getMessage(() => remoteFirebaseDataSource.signIn(userModel));
   }
 
   Future<Either<Failure, UserEntity>> _getMessage(
       Future<UserModel> Function() fun) async {
     if (await networkInfo.isConnected) {
       try {
-        final userModel = await fun(); // Await the function result properly
+        final userModel = await fun();
         // Map UserModel back to UserEntity
         return Right(UserEntity(
           email: userModel.email,
           password: userModel.password,
           id: userModel.id,
         ));
-      } on ServerException {
-        return Left(ServerFailure());
+      } on FirebaseAuthException {
+        return Left(FirebaseAuthFailure());
       }
     } else {
       return Left(OfflineFailure());
