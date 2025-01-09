@@ -69,9 +69,20 @@ class SignUpAndInPage extends StatelessWidget {
                 ? FormBtnWidget(title: "Sign In", onPressed: () {})
                 : FormBtnWidget(title: "Sign up", onPressed: () {}),
             isLogin
-                ? _signupIn(
-                    context, "Don\'t have an account?", "Sign Up", () {})
-                : _signupIn(context, "Already have an account?", "Login", () {})
+                ? _signupIn(context, "Don\'t have an account?", "Sign Up", () {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => SignUpAndInPage(isLogin: false)),
+                        (route) => false);
+                  })
+                : _signupIn(context, "Already have an account?", "Login", () {
+                    Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => SignUpAndInPage(isLogin: true)),
+                        (route) => false);
+                  })
           ],
         ),
       ),
