@@ -21,8 +21,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final eitherFailureOrMessage = await signUpUseCase(event.user);
         emit(_EitherDoneMessageOrErrorState(
             eitherFailureOrMessage, SIGN_UP_MESSAGE));
-      }
-    });
+      }else if (event is SignInEvent) {
+        emit(LoadingAuthState());
+        final eitherFailureOrMessage = await signInUseCase(event.user);
+        emit(_EitherDoneMessageOrErrorState(
+            eitherFailureOrMessage, SIGN_IN_MESSAGE));
+    }});
   }
   AuthState _EitherDoneMessageOrErrorState(
       Either<Failure, UserEntity> eitherFailureOrMessage, String message) {
