@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:kiosk_finder/features/authentication/domain/repositories/auth_repository.dart';
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/error/failures.dart';
@@ -8,7 +9,7 @@ import '../datasources/user_firebase_data_source.dart';
 import '../models/user_model.dart';
 
 class AuthRepositoryImpl extends AuthRepository {
-  final UserRemoteDataSource remoteFirebaseDataSource;
+  final AuthRemoteDataSource remoteFirebaseDataSource;
   final NetworkInfo networkInfo;
 
   AuthRepositoryImpl({
@@ -33,6 +34,7 @@ class AuthRepositoryImpl extends AuthRepository {
       password: user.password,
       id: user.id,
     );
+    print("in innnnnnnnnnnn ${user.email}");
     return await _getMessage(() => remoteFirebaseDataSource.signIn(userModel));
   }
 
@@ -47,6 +49,16 @@ class AuthRepositoryImpl extends AuthRepository {
           password: userModel.password,
           id: userModel.id,
         ));
+      } on UserNotFoundException {
+        return Left(UserNotFoundFailure());
+      } on WrongPasswordException {
+        return Left(WrongPasswordFailure());
+      } on EmailAlreadyInUseException {
+        return Left(EmailAlreadyInUseFailure());
+      } on WeakPasswordException {
+        return Left(WeakPasswordFailure());
+      } on InvalidEmailException {
+        return Left(InvalidEmailFailure());
       } on FirebaseAuthException {
         return Left(FirebaseAuthFailure());
       }

@@ -21,12 +21,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final eitherFailureOrMessage = await signUpUseCase(event.user);
         emit(_EitherDoneMessageOrErrorState(
             eitherFailureOrMessage, SIGN_UP_MESSAGE));
-      }else if (event is SignInEvent) {
+      } else if (event is SignInEvent) {
         emit(LoadingAuthState());
         final eitherFailureOrMessage = await signInUseCase(event.user);
         emit(_EitherDoneMessageOrErrorState(
             eitherFailureOrMessage, SIGN_IN_MESSAGE));
-    }});
+      }
+    });
   }
   AuthState _EitherDoneMessageOrErrorState(
       Either<Failure, UserEntity> eitherFailureOrMessage, String message) {
@@ -43,6 +44,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         return FIREBASE_AUTH_FAILURE_MESSAGE;
       case OfflineFailure:
         return OFFLINE_FAILURE_MESSAGE;
+      case UserNotFoundFailure:
+        return USER_NOT_FOUND_MESSAGE;
+      case WrongPasswordFailure:
+        return WRONG_PASSWORD_MESSAGE;
+      case EmailAlreadyInUseFailure:
+        return EMAIL_ALREADY_IN_USE_MESSAGE;
+      case WeakPasswordFailure:
+        return WEAK_PASSWORD_MESSAGE;
+      case InvalidEmailFailure:
+        return INVALID_EMAIL;
       default:
         return "UnexpectedError , please try again later.";
     }

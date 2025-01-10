@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:kiosk_finder/features/authentication/presentation/widgets/form_btn_widget.dart';
-import 'package:kiosk_finder/features/authentication/presentation/widgets/text_form_field_widget.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kiosk_finder/features/authentication/presentation/widgets/form_widget.dart';
+
+import '../../../../core/util/snack_bar_message.dart';
+import '../../../map/home.dart';
+import '../bloc/auth/auth_bloc.dart';
+import '../bloc/auth/auth_state.dart';
+import '../widgets/loading_widget.dart';
 
 class SignUpAndInPage extends StatelessWidget {
   final bool isLogin;
@@ -42,66 +48,29 @@ class SignUpAndInPage extends StatelessWidget {
                 )
               ],
             ),
-            Column(
-              children: <Widget>[
-                TextFormFieldWidget(
-                  title: "Email",
-                  icon: Icons.email,
-                  isPassword: false,
-                ),
-                const SizedBox(height: 20),
-                TextFormFieldWidget(
-                  title: "Password",
-                  icon: Icons.password,
-                  isPassword: true,
-                ),
-                const SizedBox(height: 20),
-                isLogin
-                    ? SizedBox()
-                    : TextFormFieldWidget(
-                        title: "Confirm Password",
-                        icon: Icons.password,
-                        isPassword: true,
-                      ),
-              ],
-            ),
-            isLogin
-                ? FormBtnWidget(title: "Sign In", onPressed: () {})
-                : FormBtnWidget(title: "Sign up", onPressed: () {}),
-            isLogin
-                ? _signupIn(context, "Don\'t have an account?", "Sign Up", () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => SignUpAndInPage(isLogin: false)),
-                    );
-                  })
-                : _signupIn(context, "Already have an account?", "Login", () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => SignUpAndInPage(isLogin: true)),
-                    );
-                  })
+
+            BlocConsumer<AuthBloc, AuthState>(
+                builder: (context, state) {
+                  if (state is LoadingAuthState) {
+                    return LoadingWidget();
+                  }
+                  return  FormWidget(isLogin: isLogin);
+                }, listener: (context, state) {
+              if (state is MessageAuthState) {
+                SnackBarMessage()
+                    .showSuccessSnackBar(message: state.message, context: context);
+                Navigator.of(context).pushAndRemoveUntil(
+                    MaterialPageRoute(builder: (_) => Home()),
+                        (route) => false);
+              } else if (state is ErrorAuthState) {
+                SnackBarMessage()
+                    .showErrorSnackBar(message: state.message, context: context);
+
+              }
+            }),
           ],
         ),
       ),
-    );
-  }
-
-  _signupIn(
-      context, String statement, String title, void Function() onPressed) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(statement),
-        TextButton(
-            onPressed: onPressed,
-            child: Text(
-              title,
-              style: TextStyle(color: Colors.purple),
-            ))
-      ],
     );
   }
 }
