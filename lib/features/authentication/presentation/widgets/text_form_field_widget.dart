@@ -24,7 +24,7 @@ class TextFormFieldWidget extends StatelessWidget {
           errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(18),
               borderSide:BorderSide(
-                color: Colors.red,
+                color: Color(0xffcc0808),
                 width: 2.0,
               ),),
           //   fillColor: Colors.purple.withOpacity(0.1),
@@ -33,7 +33,7 @@ class TextFormFieldWidget extends StatelessWidget {
       obscureText: isPassword?true:false,
       validator: (val){
         if(val!.isEmpty){
-          return '$title is requied';
+          return '$title is required';
         }
       },
 
