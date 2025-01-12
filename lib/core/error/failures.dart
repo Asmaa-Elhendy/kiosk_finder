@@ -43,3 +43,35 @@ class InvalidEmailFailure extends Failure {
   // TODO: implement props
   List<Object?> get props => [];
 }
+
+class FirestoreWriteFailure extends Failure {
+  final String message;
+  FirestoreWriteFailure(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class FirestoreReadFailure extends Failure {
+  final String message;
+  FirestoreReadFailure(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class FileReadFailure extends Failure {
+  final String message;
+  FileReadFailure(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}
+
+class UnexpectedFailure extends Failure {
+  final String message;
+  UnexpectedFailure(this.message);
+
+  @override
+  List<Object?> get props => [message];
+}

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kiosk_finder/features/authentication/presentation/widgets/form_widget.dart';
-
 import '../../../../core/util/snack_bar_message.dart';
-import '../../../map/home.dart';
+import '../../../map&marker_display/presentation/pages/home.dart';
+
 import '../bloc/auth/auth_bloc.dart';
 import '../bloc/auth/auth_state.dart';
-import '../widgets/loading_widget.dart';
+import '../../../../core/widgets/loading_widget.dart';
 
 class SignUpAndInPage extends StatelessWidget {
   final bool isLogin;
@@ -48,24 +48,21 @@ class SignUpAndInPage extends StatelessWidget {
                 )
               ],
             ),
-
-            BlocConsumer<AuthBloc, AuthState>(
-                builder: (context, state) {
-                  if (state is LoadingAuthState) {
-                    return LoadingWidget();
-                  }
-                  return  FormWidget(isLogin: isLogin);
-                }, listener: (context, state) {
+            BlocConsumer<AuthBloc, AuthState>(builder: (context, state) {
+              if (state is LoadingAuthState) {
+                return LoadingWidget();
+              }
+              return FormWidget(isLogin: isLogin);
+            }, listener: (context, state) {
               if (state is MessageAuthState) {
-                SnackBarMessage()
-                    .showSuccessSnackBar(message: state.message, context: context);
+                SnackBarMessage().showSuccessSnackBar(
+                    message: state.message, context: context);
                 Navigator.of(context).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (_) => Home()),
-                        (route) => false);
+                    MaterialPageRoute(builder: (_) => CitySelectionPage()),
+                    (route) => false);
               } else if (state is ErrorAuthState) {
-                SnackBarMessage()
-                    .showErrorSnackBar(message: state.message, context: context);
-
+                SnackBarMessage().showErrorSnackBar(
+                    message: state.message, context: context);
               }
             }),
           ],

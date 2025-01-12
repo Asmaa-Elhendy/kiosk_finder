@@ -22,6 +22,7 @@ dependencies:
   internet_connection_checker: ^3.0.1
   firebase_core: ^3.10.0
   firebase_auth: ^5.4.0
+  cloud_firestore: ^5.6.1
 
 
   cupertino_icons: ^1.0.8
@@ -39,4 +40,6 @@ flutter:
 
 
   uses-material-design: true
-
+  assets:
+    - assets/cities/locationsB.json
+    - assets/cities/locationsA.json
