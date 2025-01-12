@@ -5,7 +5,7 @@ import 'package:kiosk_finder/features/authentication/presentation/bloc/auth/auth
 import 'package:kiosk_finder/features/authentication/presentation/bloc/auth/auth_event.dart';
 import 'package:kiosk_finder/features/authentication/presentation/widgets/text_form_field_widget.dart';
 import '../pages/sign_up_and_in_page.dart';
-import 'form_btn_widget.dart';
+import '../../../../core/widgets/form_btn_widget.dart';
 
 class FormWidget extends StatefulWidget {
   final bool isLogin;
@@ -59,12 +59,12 @@ class _FormWidgetState extends State<FormWidget> {
         ),
         const SizedBox(height: 20),
         widget.isLogin
-            ? FormBtnWidget(
+            ? BtnWidget(
                 title: "Sign In",
                 onPressed: () {
                   onPressSignUpOrIn(true);
                 })
-            : FormBtnWidget(
+            : BtnWidget(
                 title: "Sign up",
                 onPressed: () {
                   onPressSignUpOrIn(false);

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-class FormBtnWidget extends StatelessWidget {
+class BtnWidget extends StatelessWidget {
   final String title;
   void Function() onPressed;
-  FormBtnWidget({required this.title, required this.onPressed, super.key});
+  BtnWidget({required this.title, required this.onPressed, super.key});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.only(top: 3, left: 3),
+        padding: const EdgeInsets.only(top: 3, left: 3, bottom: 20),
         child: ElevatedButton(
           onPressed: onPressed,
           style: ElevatedButton.styleFrom(

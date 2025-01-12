@@ -1,3 +1,5 @@
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import '../../domain/entities/kiosk_entity.dart';
 
 abstract class KioskState {}
@@ -8,7 +10,9 @@ class KioskLoadingState extends KioskState {}
 
 class KioskLoadedState extends KioskState {
   final List<Kiosk> kiosks;
-  KioskLoadedState(this.kiosks);
+  final Set<Marker> markers;
+
+  KioskLoadedState({required this.kiosks, required this.markers});
 }
 
 class KioskEmptyState extends KioskState {
