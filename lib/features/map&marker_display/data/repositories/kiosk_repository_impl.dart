@@ -23,7 +23,10 @@ class KioskRepositoryImpl implements KioskRepository {
         final kiosks = await loadKiosksFromJson(locationsJsonPath);
         await remoteDataSource.uploadKiosks(city, kiosks);
         return Right(unit);
-      } on FileReadException {
+      }on AlreadyUploadJsonFileException{
+        return Left(AlreadyExistJsonFailure());
+      }
+      on FileReadException {
         return Left(FileReadFailure());
       } on FirestoreWriteException {
         return Left(FirestoreWriteFailure());

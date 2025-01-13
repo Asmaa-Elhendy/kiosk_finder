@@ -45,7 +45,6 @@ class InvalidEmailFailure extends Failure {
 }
 
 class FirestoreWriteFailure extends Failure {
-
   FirestoreWriteFailure();
 
   @override
@@ -53,7 +52,6 @@ class FirestoreWriteFailure extends Failure {
 }
 
 class FirestoreReadFailure extends Failure {
-
   FirestoreReadFailure();
 
   @override
@@ -61,15 +59,20 @@ class FirestoreReadFailure extends Failure {
 }
 
 class FileReadFailure extends Failure {
-
   FileReadFailure();
 
   @override
   List<Object?> get props => [];
 }
 
-class UnexpectedFailure extends Failure {
+class AlreadyExistJsonFailure extends Failure {
+  AlreadyExistJsonFailure();
 
+  @override
+  List<Object?> get props => [];
+}
+
+class UnexpectedFailure extends Failure {
   UnexpectedFailure();
 
   @override

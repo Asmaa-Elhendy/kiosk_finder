@@ -27,18 +27,24 @@ class KioskBloc extends Bloc<KioskEvent, KioskState> {
       } else if (event is UploadKiosksEvent) {
         emit(KioskUploadingState());
         final failureOrUpload =
-        await uploadKiosksUseCase(event.city, event.locationsJsonPath);
+            await uploadKiosksUseCase(event.city, event.locationsJsonPath);
+        emit(_mapUploadKiosksResultToState(failureOrUpload));
+      } else if (event is UploadKiosksEvent) {
+        emit(KioskUploadingState());
+        final failureOrUpload =
+            await uploadKiosksUseCase(event.city, event.locationsJsonPath);
         emit(_mapUploadKiosksResultToState(failureOrUpload));
       }
     });
   }
 
-  KioskState _mapFetchFailureOrResultToState(Either<Failure, List<Kiosk>> either) {
+  KioskState _mapFetchFailureOrResultToState(
+      Either<Failure, List<Kiosk>> either) {
     return either.fold(
-          (failure) {
+      (failure) {
         return KioskErrorState(_mapFailureToMessage(failure));
       },
-          (kiosks) {
+      (kiosks) {
         if (kiosks.isEmpty) {
           return KioskEmptyState('No kiosks found for this city.');
         } else {
@@ -47,7 +53,8 @@ class KioskBloc extends Bloc<KioskEvent, KioskState> {
             return Marker(
               markerId: MarkerId(kiosk.placeId.toString()),
               position: LatLng(kiosk.lat, kiosk.lng),
-              infoWindow: InfoWindow(title: kiosk.name, snippet: kiosk.city+kiosk.address),
+              infoWindow: InfoWindow(
+                  title: kiosk.name, snippet: kiosk.city + kiosk.address),
             );
           }).toSet();
 
@@ -59,10 +66,10 @@ class KioskBloc extends Bloc<KioskEvent, KioskState> {
 
   KioskState _mapUploadKiosksResultToState(Either<Failure, Unit> either) {
     return either.fold(
-          (failure) {
+      (failure) {
         return KioskErrorState(_mapFailureToMessage(failure));
       },
-          (_) {
+      (_) {
         return KioskUploadedState(UPLOAD_SUCCESSFULLY);
       },
     );
@@ -74,6 +81,8 @@ class KioskBloc extends Bloc<KioskEvent, KioskState> {
         return FIRESTORE_READ_FAILURE_MESSAGE;
       case FileReadFailure:
         return FILE_READ_FAILURE_MESSAGE;
+      case AlreadyExistJsonFailure:
+        return ALREADY_UPLOAD_FAILURE_MESSAGE;
       case UnexpectedFailure:
         return UNEXPECTED_FAILURE_MESSAGE;
       case OfflineFailure:

@@ -28,3 +28,6 @@ class FileReadException implements Exception {
 
   FileReadException();
 }
+class AlreadyUploadJsonFileException implements Exception{
+  AlreadyUploadJsonFileException();
+}

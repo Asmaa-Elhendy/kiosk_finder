@@ -10,4 +10,5 @@ const FIRESTORE_WRITE_FAILURE_MESSAGE="Upload Kiosks Failed";
 const FILE_READ_FAILURE_MESSAGE="Unable to read Json File";
 const UNEXPECTED_FAILURE_MESSAGE="Unexpected Error";
 const DEFAULT_FAILURE_MESSAGE="Unexpected Error , Please try again later .";
+const ALREADY_UPLOAD_FAILURE_MESSAGE="Json File Already Uploaded";
 

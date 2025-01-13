@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../core/error/exceptions.dart'; // Custom exceptions
 import '../models/kiosk_model.dart';
 
@@ -9,22 +10,27 @@ abstract class KioskRemoteDataSource {
 
 class KioskRemoteDataSourceImpl extends KioskRemoteDataSource {
   final FirebaseFirestore firestore;
-
-  KioskRemoteDataSourceImpl(this.firestore);
+  final SharedPreferences sharedPreferences;
+  KioskRemoteDataSourceImpl(
+      {required this.firestore, required this.sharedPreferences});
 
   @override
   Future<void> uploadKiosks(String city, List<KioskModel> kiosks) async {
     final batch = firestore
         .batch(); //Creates a Firestore batch object, allow to perform multiple write operations as a single atomic transaction.
-    try {
-      for (final kiosk in kiosks) {
-        final docRef = firestore.collection(city).doc(kiosk.placeId);
-        batch.set(docRef, kiosk.toJson());
+    if (sharedPreferences.containsKey(city)) {
+      throw AlreadyUploadJsonFileException();
+    } else {
+      try {
+        for (final kiosk in kiosks) {
+          final docRef = firestore.collection(city).doc(kiosk.placeId);
+          batch.set(docRef, kiosk.toJson());
+        }
+        await batch
+            .commit(); //write operations in the batch as a single transaction.
+      } catch (e) {
+        throw FirestoreWriteException();
       }
-      await batch
-          .commit(); //write operations in the batch as a single transaction.
-    } catch (e) {
-      throw FirestoreWriteException();
     }
   }
 

@@ -9,6 +9,7 @@ import 'package:kiosk_finder/features/map&marker_display/data/datasources/kiosk_
 import 'package:kiosk_finder/features/map&marker_display/data/repositories/kiosk_repository_impl.dart';
 import 'package:kiosk_finder/features/map&marker_display/domain/usecases/fetch_kiosks_usecase.dart';
 import 'package:kiosk_finder/features/map&marker_display/domain/usecases/upload_kiosk_usecase.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'core/network/network_info.dart';
 import 'features/authentication/data/datasources/user_firebase_data_source.dart';
 import 'features/authentication/data/repositories/auth_repository_impl.dart';
@@ -48,18 +49,22 @@ Future<void> init() async {
   sl.registerLazySingleton(() => InternetConnectionChecker.createInstance());
   //kiosk feature
   //bloc
-  sl.registerFactory(() => KioskBloc(fetchKiosksUseCase: sl(),uploadKiosksUseCase: sl()));
+  sl.registerFactory(
+      () => KioskBloc(fetchKiosksUseCase: sl(), uploadKiosksUseCase: sl()));
   //useCases
   sl.registerLazySingleton(() => UploadKiosksUseCase(sl()));
   //useCases
   sl.registerLazySingleton(() => FetchKiosksUseCase(sl()));
   //repository
-  sl.registerLazySingleton<KioskRepository>(() => KioskRepositoryImpl(sl(), sl()));
+  sl.registerLazySingleton<KioskRepository>(
+      () => KioskRepositoryImpl(sl(), sl()));
   //dataSources
 
-  sl.registerLazySingleton<KioskRemoteDataSource>(
-      () => KioskRemoteDataSourceImpl(sl()));
+  sl.registerLazySingleton<KioskRemoteDataSource>(() =>
+      KioskRemoteDataSourceImpl(firestore: sl(), sharedPreferences: sl()));
   //external
   final FirebaseFirestore firebaseFireStore = FirebaseFirestore.instance;
   sl.registerLazySingleton(() => firebaseFireStore);
+  final sharedPreferences = await SharedPreferences.getInstance();
+  sl.registerLazySingleton(() => sharedPreferences);
 }
