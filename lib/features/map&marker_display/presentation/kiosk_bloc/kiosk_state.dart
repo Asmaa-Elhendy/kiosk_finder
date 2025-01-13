@@ -15,6 +15,7 @@ class KioskLoadedState extends KioskState {
   KioskLoadedState({required this.kiosks,});
 }
 
+
 class KioskEmptyState extends KioskState {
   final String message;
   KioskEmptyState(this.message);
@@ -26,6 +27,7 @@ class KioskUploadedState extends KioskState {
   final String message;
   KioskUploadedState(this.message);
 }
+
 
 class KioskErrorState extends KioskState {
   final String message;

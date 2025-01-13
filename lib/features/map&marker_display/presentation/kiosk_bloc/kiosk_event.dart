@@ -1,3 +1,4 @@
+
 import 'package:equatable/equatable.dart';
 
 import '../../domain/entities/kiosk_entity.dart';
