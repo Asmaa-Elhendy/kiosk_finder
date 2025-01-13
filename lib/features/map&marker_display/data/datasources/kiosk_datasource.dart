@@ -28,6 +28,7 @@ class KioskRemoteDataSourceImpl extends KioskRemoteDataSource {
         }
         await batch
             .commit(); //write operations in the batch as a single transaction.
+        sharedPreferences.setString(city, city);
       } catch (e) {
         throw FirestoreWriteException();
       }
