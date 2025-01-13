@@ -10,9 +10,9 @@ class KioskLoadingState extends KioskState {}
 
 class KioskLoadedState extends KioskState {
   final List<Kiosk> kiosks;
-  final Set<Marker> markers;
+  //final Set<Marker> markers;
 
-  KioskLoadedState({required this.kiosks, required this.markers});
+  KioskLoadedState({required this.kiosks,});
 }
 
 class KioskEmptyState extends KioskState {

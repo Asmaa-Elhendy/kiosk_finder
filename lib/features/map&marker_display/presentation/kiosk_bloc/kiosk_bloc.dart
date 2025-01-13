@@ -23,7 +23,7 @@ class KioskBloc extends Bloc<KioskEvent, KioskState> {
       if (event is FetchKiosksEvent) {
         emit(KioskLoadingState());
         final failureOrResult = await fetchKiosksUseCase(event.city);
-        emit(_mapFailureOrResultToState(failureOrResult));
+        emit(_mapFetchFailureOrResultToState(failureOrResult));
       } else if (event is UploadKiosksEvent) {
         emit(KioskUploadingState());
         final failureOrUpload =
@@ -33,7 +33,7 @@ class KioskBloc extends Bloc<KioskEvent, KioskState> {
     });
   }
 
-  KioskState _mapFailureOrResultToState(Either<Failure, List<Kiosk>> either) {
+  KioskState _mapFetchFailureOrResultToState(Either<Failure, List<Kiosk>> either) {
     return either.fold(
       (failure) {
         return KioskErrorState(_mapFailureToMessage(failure));
@@ -47,11 +47,11 @@ class KioskBloc extends Bloc<KioskEvent, KioskState> {
             return Marker(
               markerId: MarkerId(kiosk.placeId.toString()),
               position: LatLng(kiosk.lat, kiosk.lng),
-              infoWindow: InfoWindow(title: kiosk.name, snippet: kiosk.city),
+              infoWindow: InfoWindow(title: kiosk.name, snippet: kiosk.city+kiosk.address),
             );
           }).toSet();
 
-          return KioskLoadedState(kiosks: kiosks, markers: markers);
+          return KioskLoadedState(kiosks: kiosks);
         }
       },
     );

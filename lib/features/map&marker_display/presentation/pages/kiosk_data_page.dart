@@ -6,6 +6,7 @@ import 'package:kiosk_finder/core/util/snack_bar_message.dart';
 import 'package:permission_handler/permission_handler.dart'; // Import permission_handler for runtime permissions
 
 import '../../../../core/widgets/loading_widget.dart';
+import '../../domain/entities/kiosk_entity.dart';
 import '../kiosk_bloc/kiosk_bloc.dart';
 import '../kiosk_bloc/kiosk_event.dart';
 import '../kiosk_bloc/kiosk_state.dart';
@@ -33,47 +34,45 @@ class _KioskDataPageState extends State<KioskDataPage> {
     _currentPosition = LatLng(37.7749, -122.4194); // Default to San Francisco
 
     // Check permissions and attempt to get location if required
-    _checkPermissionsAndGetLocation();
+   // _checkPermissionsAndGetLocation();
   }
 
   // Check and request location permissions, then get the current location
-  Future<void> _checkPermissionsAndGetLocation() async {
-    PermissionStatus permissionStatus = await Permission.location.request();
-
-    if (permissionStatus.isGranted) {
-      // Permissions are granted, now get the current location
-      _getCurrentLocation();
-    } else {
-      // Permissions not granted, keep default position (San Francisco)
-      print("Location permission denied.");
-      setState(() {
-        _currentPosition = LatLng(37.7749, -122.4194); // San Francisco
-      });
-    }
-  }
+  // Future<void> _checkPermissionsAndGetLocation() async {
+  //   PermissionStatus permissionStatus = await Permission.location.request();
+  //
+  //   if (permissionStatus.isGranted) {
+  //     // Permissions are granted, now get the current location
+  //     _getCurrentLocation();
+  //   } else {
+  //     // Permissions not granted, keep default position (San Francisco)
+  //     print("Location permission denied.");
+  //     setState(() {
+  //       _currentPosition = LatLng(37.7749, -122.4194); // San Francisco
+  //     });
+  //   }
+  // }
 
   // Fetch current location using Geolocator
-  Future<void> _getCurrentLocation() async {
-    try {
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-      setState(() {
-        // Update the map to the user's current location
-        _currentPosition = LatLng(position.latitude, position.longitude);
-        _isLocationFetched = true; // Mark the location as fetched
-      });
-      // If map controller is initialized, move the camera to the current location
-      if (_mapController != null) {
-        _mapController.animateCamera(
-          CameraUpdate.newLatLng(_currentPosition), // Update camera position
-        );
-      }
-    } catch (e) {
-      // If location access fails, keep the default location (San Francisco)
-      print("Error fetching location: $e");
-    }
-  }
+  // Future<void> _getCurrentLocation() async {
+  //   try {
+  //     Position position = await Geolocator.getCurrentPosition();
+  //     setState(() {
+  //       // Update the map to the user's current location
+  //       _currentPosition = LatLng(position.latitude, position.longitude);
+  //       _isLocationFetched = true; // Mark the location as fetched
+  //     });
+  //     // If map controller is initialized, move the camera to the current location
+  //     if (_mapController != null) {
+  //       _mapController.animateCamera(
+  //         CameraUpdate.newLatLng(_currentPosition), // Update camera position
+  //       );
+  //     }
+  //   } catch (e) {
+  //     // If location access fails, keep the default location (San Francisco)
+  //     print("Error fetching location: $e");
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +96,9 @@ class _KioskDataPageState extends State<KioskDataPage> {
 
             LatLng firstKioskPosition =
                 LatLng(state.kiosks[0].lat, state.kiosks[0].lng);
-            return _buildMapView(state.markers, firstKioskPosition);
+            return _buildMapView(state.kiosks, firstKioskPosition);
+          }else if (state is KioskEmptyState){
+            return Center(child: Text(state.message));
           }
           // else if (state is KioskEmptyState) {
           //   return Center(child: Text(state.message));
@@ -105,7 +106,7 @@ class _KioskDataPageState extends State<KioskDataPage> {
           //   return Center(child: CircularProgressIndicator());
           // }
           else {
-            return Center(child: Text('Unexpected state. Please try again.'));
+            return Center(child: Text('Unexpected error. Please try again.'));
           }
         },
       ),
@@ -127,8 +128,20 @@ class _KioskDataPageState extends State<KioskDataPage> {
   }
 
   // Build the map view using the markers from the state and center it on the first kiosk location
-  Widget _buildMapView(Set<Marker> markers, LatLng firstKioskPosition) {
-    _markers = markers;
+  Widget _buildMapView(List<Kiosk> kiosks, LatLng firstKioskPosition) {
+    _markers = kiosks.map((kiosk) {
+      return Marker(
+        markerId: MarkerId(kiosk.placeId.toString()),
+        position: LatLng(kiosk.lat, kiosk.lng),
+        infoWindow: InfoWindow(
+          title: kiosk.name,
+          snippet: kiosk.city+", "+kiosk.lat.toString()+kiosk.lng.toString(),
+        ),
+        onTap: () {
+
+        },
+      );
+    }).toSet();
     return GoogleMap(
       initialCameraPosition: CameraPosition(
         target:
