@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geolocator/geolocator.dart';  // Import Geolocator
-import 'package:permission_handler/permission_handler.dart';  // Import permission_handler for runtime permissions
+import 'package:geolocator/geolocator.dart'; // Import Geolocator
+import 'package:kiosk_finder/core/util/snack_bar_message.dart';
+import 'package:permission_handler/permission_handler.dart'; // Import permission_handler for runtime permissions
 
 import '../../../../core/widgets/loading_widget.dart';
 import '../kiosk_bloc/kiosk_bloc.dart';
@@ -22,7 +23,8 @@ class _KioskDataPageState extends State<KioskDataPage> {
   late GoogleMapController _mapController;
   late LatLng _currentPosition;
   late Set<Marker> _markers = Set(); // Store markers
-  bool _isLocationFetched = false;  // Flag to ensure map updates only after location is fetched
+  bool _isLocationFetched =
+      false; // Flag to ensure map updates only after location is fetched
 
   @override
   void initState() {
@@ -80,13 +82,11 @@ class _KioskDataPageState extends State<KioskDataPage> {
       body: BlocConsumer<KioskBloc, KioskState>(
         listener: (context, state) {
           if (state is KioskUploadedState) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
+            SnackBarMessage()
+                .showSuccessSnackBar(message: state.message, context: context);
           } else if (state is KioskErrorState) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
+            SnackBarMessage()
+                .showErrorSnackBar(message: state.message, context: context);
           }
         },
         builder: (context, state) {
@@ -94,18 +94,17 @@ class _KioskDataPageState extends State<KioskDataPage> {
             return LoadingWidget();
           } else if (state is KioskLoadedState) {
             // Fetch the first kiosk location from the state and use it for the camera position
-            if (state.kiosks.isNotEmpty) {
-              LatLng firstKioskPosition = LatLng(
-                  state.kiosks[0].lat, state.kiosks[0].lng);
-              return _buildMapView(state.markers, firstKioskPosition);
-            } else {
-              return Center(child: Text('No kiosks available.'));
-            }
-          } else if (state is KioskEmptyState) {
-            return Center(child: Text(state.message));
-          } else if (state is KioskUploadingState) {
-            return Center(child: CircularProgressIndicator());
-          } else {
+
+            LatLng firstKioskPosition =
+                LatLng(state.kiosks[0].lat, state.kiosks[0].lng);
+            return _buildMapView(state.markers, firstKioskPosition);
+          }
+          // else if (state is KioskEmptyState) {
+          //   return Center(child: Text(state.message));
+          // } else if (state is KioskUploadingState) {
+          //   return Center(child: CircularProgressIndicator());
+          // }
+          else {
             return Center(child: Text('Unexpected state. Please try again.'));
           }
         },
@@ -132,7 +131,8 @@ class _KioskDataPageState extends State<KioskDataPage> {
     _markers = markers;
     return GoogleMap(
       initialCameraPosition: CameraPosition(
-        target: firstKioskPosition, // Use the first kiosk position from the state
+        target:
+            firstKioskPosition, // Use the first kiosk position from the state
         zoom: 12,
       ),
       markers: _markers,

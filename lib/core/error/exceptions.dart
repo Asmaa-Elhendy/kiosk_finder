@@ -15,16 +15,16 @@ class WeakPasswordException implements Exception {}
 class InvalidEmailException implements Exception {}
 
 class FirestoreWriteException implements Exception {
-  final String message;
-  FirestoreWriteException(this.message);
+
+  FirestoreWriteException();
 }
 
 class FirestoreReadException implements Exception {
-  final String message;
-  FirestoreReadException(this.message);
+
+  FirestoreReadException();
 }
 
 class FileReadException implements Exception {
-  final String message;
-  FileReadException(this.message);
+
+  FileReadException();
 }

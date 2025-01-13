@@ -14,15 +14,17 @@ class KioskRemoteDataSourceImpl extends KioskRemoteDataSource {
 
   @override
   Future<void> uploadKiosks(String city, List<KioskModel> kiosks) async {
-    final batch = firestore.batch();
+    final batch = firestore
+        .batch(); //Creates a Firestore batch object, allow to perform multiple write operations as a single atomic transaction.
     try {
       for (final kiosk in kiosks) {
         final docRef = firestore.collection(city).doc(kiosk.placeId);
         batch.set(docRef, kiosk.toJson());
       }
-      await batch.commit();
+      await batch
+          .commit(); //write operations in the batch as a single transaction.
     } catch (e) {
-      throw FirestoreWriteException("Failed to upload kiosks: $e");
+      throw FirestoreWriteException();
     }
   }
 
@@ -35,7 +37,7 @@ class KioskRemoteDataSourceImpl extends KioskRemoteDataSource {
             .toList();
       });
     } catch (e) {
-      throw FirestoreReadException("Failed to fetch kiosks: $e");
+      throw FirestoreReadException();
     }
   }
 }

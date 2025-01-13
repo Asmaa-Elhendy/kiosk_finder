@@ -23,10 +23,12 @@ class KioskRepositoryImpl implements KioskRepository {
         final kiosks = await loadKiosksFromJson(locationsJsonPath);
         await remoteDataSource.uploadKiosks(city, kiosks);
         return Right(unit);
-      } on FirestoreWriteException catch (e) {
-        return Left(FirestoreWriteFailure(e.message));
+      } on FileReadException {
+        return Left(FileReadFailure());
+      } on FirestoreWriteException {
+        return Left(FirestoreWriteFailure());
       } catch (e) {
-        return Left(UnexpectedFailure(e.toString()));
+        return Left(UnexpectedFailure());
       }
     } else {
       return Left(OfflineFailure());
@@ -42,7 +44,7 @@ class KioskRepositoryImpl implements KioskRepository {
           .map((kioskData) => KioskModel.fromJson(kioskData))
           .toList();
     } catch (e) {
-      throw FileReadException("Failed to read JSON file: $e");
+      throw FileReadException();
     }
   }
 
@@ -50,7 +52,7 @@ class KioskRepositoryImpl implements KioskRepository {
     try {
       return await rootBundle.loadString(path);
     } catch (e) {
-      throw FileReadException("File not found at path $path: $e");
+      throw FileReadException();
     }
   }
 
@@ -62,9 +64,9 @@ class KioskRepositoryImpl implements KioskRepository {
         final kioskModels = await kioskModelsStream.first;
         return Right(kioskModels.map((model) => model.toEntity()).toList());
       } on FirestoreReadException catch (e) {
-        return Left(FirestoreReadFailure(e.message));
+        return Left(FirestoreReadFailure());
       } catch (e) {
-        return Left(UnexpectedFailure(e.toString()));
+        return Left(UnexpectedFailure());
       }
     } else {
       return Left(OfflineFailure());
