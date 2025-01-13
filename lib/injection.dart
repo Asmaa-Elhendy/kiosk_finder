@@ -36,7 +36,7 @@ Future<void> init() async {
   //dataSources
 
   sl.registerLazySingleton<AuthRemoteDataSource>(
-      () => AuthRemoteDataSourceImpl(firebaseAuth: sl()));
+          () => AuthRemoteDataSourceImpl(firebaseAuth: sl()));
 
   //core
 
@@ -50,14 +50,14 @@ Future<void> init() async {
   //kiosk feature
   //bloc
   sl.registerFactory(
-      () => KioskBloc(fetchKiosksUseCase: sl(), uploadKiosksUseCase: sl()));
+          () => KioskBloc(fetchKiosksUseCase: sl(), uploadKiosksUseCase: sl()));
   //useCases
   sl.registerLazySingleton(() => UploadKiosksUseCase(sl()));
   //useCases
   sl.registerLazySingleton(() => FetchKiosksUseCase(sl()));
   //repository
   sl.registerLazySingleton<KioskRepository>(
-      () => KioskRepositoryImpl(sl(), sl()));
+          () => KioskRepositoryImpl(sl(), sl()));
   //dataSources
 
   sl.registerLazySingleton<KioskRemoteDataSource>(() =>
