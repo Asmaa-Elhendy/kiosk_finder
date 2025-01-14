@@ -27,12 +27,12 @@ class KioskBloc extends Bloc<KioskEvent, KioskState> {
       } else if (event is UploadKiosksEvent) {
         emit(KioskUploadingState());
         final failureOrUpload =
-            await uploadKiosksUseCase(event.city, event.locationsJsonPath);
+        await uploadKiosksUseCase(event.city, event.locationsJsonPath);
         emit(_mapUploadKiosksResultToState(failureOrUpload));
       } else if (event is UploadKiosksEvent) {
         emit(KioskUploadingState());
         final failureOrUpload =
-            await uploadKiosksUseCase(event.city, event.locationsJsonPath);
+        await uploadKiosksUseCase(event.city, event.locationsJsonPath);
         emit(_mapUploadKiosksResultToState(failureOrUpload));
       }
     });
@@ -41,10 +41,10 @@ class KioskBloc extends Bloc<KioskEvent, KioskState> {
   KioskState _mapFetchFailureOrResultToState(
       Either<Failure, List<Kiosk>> either) {
     return either.fold(
-      (failure) {
+          (failure) {
         return KioskErrorState(_mapFailureToMessage(failure));
       },
-      (kiosks) {
+          (kiosks) {
         if (kiosks.isEmpty) {
           return KioskEmptyState('No kiosks found for this city.');
         } else {
@@ -66,10 +66,10 @@ class KioskBloc extends Bloc<KioskEvent, KioskState> {
 
   KioskState _mapUploadKiosksResultToState(Either<Failure, Unit> either) {
     return either.fold(
-      (failure) {
+          (failure) {
         return KioskErrorState(_mapFailureToMessage(failure));
       },
-      (_) {
+          (_) {
         return KioskUploadedState(UPLOAD_SUCCESSFULLY);
       },
     );
