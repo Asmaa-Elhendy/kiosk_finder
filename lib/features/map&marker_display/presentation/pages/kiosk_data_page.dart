@@ -57,24 +57,55 @@ class _KioskDataPageState extends State<KioskDataPage> {
             return _buildMapView(state.kiosks, _currentPosition);
           } else if (state is KioskEmptyState) {
             return Center(child: Text(state.message));
-          } else {
+          }
+          else {
             return Center(child: Text('Unexpected error. Please try again.'));
           }
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          BlocProvider.of<KioskBloc>(context).add(
-            UploadKiosksEvent(
-              widget.city,
-              widget.city == 'city2'
-                  ? 'assets/cities/locationsB.json'
-                  : 'assets/cities/locationsA.json',
-            ),
-          );
-        },
-        child: Icon(Icons.upload),
-        tooltip: 'Upload Kiosks',
+      ),floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      floatingActionButton: Column(mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+
+              if( widget.city == 'city2') {
+                BlocProvider.of<KioskBloc>(context)
+                    .add(FetchKiosksEvent('city1'));
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => KioskDataPage(city: 'city1')),
+                );
+              }  else{
+                BlocProvider.of<KioskBloc>(context)
+                    .add(FetchKiosksEvent('city2'));
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => KioskDataPage(city: 'city2')),
+                );
+              }
+
+            },
+            child: Icon(Icons.location_city),
+            tooltip: 'toggle',
+          ),SizedBox(height: 20,),
+          FloatingActionButton(
+            onPressed: () {
+              BlocProvider.of<KioskBloc>(context).add(
+                UploadKiosksEvent(
+                  widget.city,
+                  widget.city == 'city2'
+                      ? 'assets/cities/locationsB.json'
+                      : 'assets/cities/locationsA.json',
+                ),
+
+              );
+            },
+            child: Icon(Icons.upload),
+            tooltip: 'Upload Kiosks',
+          ),
+        ],
       ),
     );
   }
